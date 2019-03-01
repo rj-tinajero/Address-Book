@@ -49,4 +49,8 @@ module.exports = class MenuController {
         console.log("Thanks for using AddressBook!");
         process.exit();
     }
+
+    getContactCount() {
+        return this.contacts.length;
+    }
 }
