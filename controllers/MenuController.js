@@ -9,6 +9,7 @@ module.exports = class MenuController {
                 message: "Please choose from an option below: ",
                 choices: [
                     "Add new contact",
+                    "Show current Date and Time",
                     "Exit"
                 ]
             }
@@ -22,6 +23,10 @@ module.exports = class MenuController {
             switch(response.mainMenuChoice) {
                 case "Add new contact": 
                     this.addContact();
+                    break;
+                case "Show current Date and Time":
+                    this.getDate();
+                    this.main();
                     break;
                 case "Exit":
                     this.exit();
@@ -48,5 +53,9 @@ module.exports = class MenuController {
     exit() {
         console.log("Thanks for using AddressBook!");
         process.exit();
+    }
+
+    getDate() {
+        console.log(new Date().toLocaleString());
     }
 }
