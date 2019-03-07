@@ -121,7 +121,7 @@ module.exports = class MenuController {
         this._printContact(contact);
         inquirer.prompt(this.book.showContactQuestions)
         .then((answer) => {
-            switch(answer.seleted) {
+            switch(answer.selected) {
                 case "Delete contact":
                     this.delete(contact);
                     break;
@@ -148,8 +148,10 @@ module.exports = class MenuController {
     }
 
     delete(contact) {
+        console.log("Deleting contact");
         inquirer.prompt(this.book.deleteConfirmQuestions)
       .then((answer) => {
+          console.log("Got answer from oconfirmation");
         if(answer.confirmation){
           this.book.delete(contact.id);
           console.log("contact deleted!");
@@ -160,6 +162,7 @@ module.exports = class MenuController {
         }
       })
       .catch((err) => {
+          console.log("error deleting contact")
         console.log(err);
         this.main();
       });
