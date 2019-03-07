@@ -11,6 +11,7 @@ module.exports = class MenuController {
                 choices: [
                     "Add new contact",
                     "View all contacts",
+                    "Search for a contact",
                     "Show current Date and Time",
                     "Exit"
                 ]
@@ -28,6 +29,9 @@ module.exports = class MenuController {
                     break;
                 case "View all contacts":
                     this.getContacts();
+                    break;
+                case "Search for a contact":
+                    this.search();
                     break;
                 case "Show current Date and Time":
                     this.getDate();
@@ -91,5 +95,73 @@ module.exports = class MenuController {
 
     remindMe() {
         return 'Learning is a life-long pursuit';
+    }
+
+    search() {
+        inquirer.prompt(this.book.searchQuestions)
+        .then ((target) => {
+            this.book.search(target.name) 
+            .then((contact) => {
+                if(contact === null) {
+                    this.clear();
+                    console.log("contact not found");
+                    this.search();
+                } else {
+                    this.showContact(contact);
+                }
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            this.main();
+        });
+    }
+
+    showContact(contact) {
+        this._printContact(contact);
+        inquirer.prompt(this.book.showContactQuestions)
+        .then((answer) => {
+            switch(answer.seleted) {
+                case "Delete contact":
+                    this.delete(contact);
+                    break;
+                case "Main menu":
+                    this.main();
+                    break;
+                default:
+                    console.log("Something went wrong.");
+                    this.showContact(contact);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            this.showContact(contact);
+        });
+    }
+    _printContact(contact) {
+        console.log(`
+            name: ${contact.name}
+            phone number: ${contact.phone}
+            email: ${contact.email}
+            --------------`
+        );
+    }
+
+    delete(contact) {
+        inquirer.prompt(this.book.deleteConfirmQuestions)
+      .then((answer) => {
+        if(answer.confirmation){
+          this.book.delete(contact.id);
+          console.log("contact deleted!");
+          this.main();
+        } else {
+          console.log("contact not deleted");
+          this.showContact(contact);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        this.main();
+      });
     }
 }
